@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/discovery-server/pom.xml" />
+        <option value="$PROJECT_DIR$/product-service/pom.xml" />
+        <option value="$PROJECT_DIR$/shopping-cart-service/pom.xml" />
+        <option value="$PROJECT_DIR$/stock-service/pom.xml" />
+        <option value="$PROJECT_DIR$/user-service/pom.xml" />
+        <option value="$PROJECT_DIR$/config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/product-service/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/user-service/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/discovery-server/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/shopping-cart-service/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/stock-service/pom.xml" />
+        <option value="$PROJECT_DIR$/favorite-list-service/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/favorite-list-service/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/order-service/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/payment-service/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/favorite-list-service/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="21" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

@@ -1,0 +1,22 @@
+rabbitmq:
+  exchange: order_exchange
+  queue: order_queue
+  routingkey: order_routing_key
+  dlx:
+    exchange: orders_dlx_exchange
+  dlq:
+    queue: orders_dlq_queue
+    routingkey: orders_dlq_routing_key
+
+stock:
+  rabbit:
+    exchange: stock_events_exchange
+    # Hata veren yer burasıydı, aşağıdakileri ekledik:
+    reserveRequestedRoutingKey: stock_reserve_requested_key
+    reservedRoutingKey: stock_reserved_key
+    rejectedRoutingKey: stock_rejected_key
+
+order:
+  rabbit:
+    stockReservedQueue: order_stock_reserved_queue
+    stockRejectedQueue: order_stock_rejected_queue

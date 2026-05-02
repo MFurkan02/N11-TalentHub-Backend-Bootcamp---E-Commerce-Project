@@ -1,0 +1,119 @@
+services:
+  # --- ALTYAPI SERVİSLERİ ---
+
+  n11-postgres:
+    image: postgres:latest
+    container_name: n11-postgres
+    environment:
+      POSTGRES_DB: n11bootcamp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  config-server:
+    image: config-server:latest
+    container_name: config-server
+    ports:
+      - "8762:8762"
+    environment:
+      - SERVER_PORT=8762
+
+  discovery-server:
+    image: discovery-server:latest
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    depends_on:
+      - config-server
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8762
+
+  # --- MİKROSERVİSLER ---
+
+  user-service:
+    image: user-service:latest
+    depends_on:
+      n11-postgres:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8762
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://n11-postgres:5432/n11bootcamp
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234
+
+  product-service:
+    image: product-service:latest
+    depends_on:
+      n11-postgres:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8762
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://n11-postgres:5432/n11bootcamp
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234
+
+  order-service:
+    image: order-service:latest
+    depends_on:
+      - discovery-server
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8762
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  stock-service:
+    image: stock-service:latest
+    depends_on:
+      - discovery-server
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8762
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  payment-service:
+    image: payment-service:latest
+    depends_on:
+      - discovery-server
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8762
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  shopping-cart-service:
+    image: shopping-cart-service:latest
+    depends_on:
+      - discovery-server
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8762
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  favorite-list-service:
+    image: favorite-list-service:latest
+    depends_on:
+      - discovery-server
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8762
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  # --- GATEWAY ---
+
+  api-gateway:
+    image: api-gateway:latest
+    ports:
+      - "8763:8763"
+    depends_on:
+      - discovery-server
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8762
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+

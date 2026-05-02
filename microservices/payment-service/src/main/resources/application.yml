@@ -1,0 +1,17 @@
+server:
+  port: 8769
+
+spring:
+  application:
+    name: payment-service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+iyzico:
+  api:
+    key: "sandbox-60gVTvgWwFI4ramzB4yanl6HUNCnMAbl" # Sandbox panelinden alacağın key
+    secret: "sandbox-TyjfIV8QxvLM80yShfF6wGE0hE0k7ezb" # Sandbox panelinden alacağın secret
+    base-url: "https://sandbox-api.iyzipay.com"

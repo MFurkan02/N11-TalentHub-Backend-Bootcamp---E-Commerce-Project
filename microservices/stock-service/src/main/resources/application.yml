@@ -1,0 +1,12 @@
+stock:
+  rabbit:
+    exchange: stock_events_exchange
+    reserveRequestedRoutingKey: stock_reserve_requested_key
+    reservedRoutingKey: stock_reserved_key
+    rejectedRoutingKey: stock_rejected_key
+    # Stock-service'in dinleyeceği kuyruk ismi:
+    reserveRequestedQueue: stock_reserve_requested_queue
+
+# Eğer stock-service de order-service'in exchange'lerini biliyorsa (Saga cevabı için):
+rabbitmq:
+  exchange: order_exchange
