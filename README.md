@@ -1,48 +1,130 @@
-🛒 E-Commerce Microservices Project
-Bu proje, modern bir e-ticaret platformunun gereksinimlerini karşılamak üzere Spring Boot ve Spring Cloud ekosistemi kullanılarak geliştirilmiş, çok modüllü bir mikroservis mimarisidir.
+# 🛒 E-Commerce Microservices Project
 
-🏗️ Proje Mimarisi ve Servisler
-Proje içerisinde yer alan servisler ve görevleri aşağıda açıklanmıştır:
+Modern bir e-ticaret platformunun ihtiyaçlarını karşılamak amacıyla geliştirilmiş,  
+**Spring Boot** ve **Spring Cloud** tabanlı çok modüllü bir **mikroservis mimarisi** projesidir.
 
-🛠️ Altyapı Servisleri
-Config Server: Uygulamanın tüm çevresel yapılandırmalarını (properties/yml) merkezi bir yerden yönetir.
+---
 
-Discovery Server (Netflix Eureka): Servislerin dinamik olarak birbirlerini bulmasını ve kayıt olmasını sağlar.
+## 🏗️ Proje Mimarisi
 
-API Gateway: Tüm dış isteklerin tek bir noktadan girmesini sağlar ve ilgili mikroservise yönlendirir.
+Proje, **altyapı (infrastructure)** ve **iş mantığı (business)** servisleri olmak üzere iki ana gruba ayrılmıştır.
 
-📦 İş Mantığı (Business) Servisleri
-User Service: Kullanıcı kayıt, giriş ve profil yönetimi işlemlerini yürütür.
+---
 
-Product Service: Ürünlerin tanımı, kategori ve özellik yönetimini yapar.
+## 🛠️ Altyapı Servisleri
 
-Stock Service: Ürünlerin stok miktarlarını takip eder ve günceller.
+### ⚙️ Config Server
+- Tüm servislerin yapılandırmalarını merkezi olarak yönetir.
+- `application.yml` / `application.properties` dosyaları buradan servis edilir.
 
-Search Service: Ürünler arasında hızlı ve etkili arama yapılmasını sağlar.
+### 🔍 Discovery Server (Netflix Eureka)
+- Mikroservislerin birbirlerini dinamik olarak bulmasını sağlar.
+- Servis kayıt ve keşif mekanizmasını yönetir.
 
-Shopping Cart Service: Kullanıcıların sepet işlemlerini (ekleme, çıkarma, güncelleme) yönetir.
+### 🌐 API Gateway
+- Tüm dış isteklerin giriş noktasıdır.
+- İstekleri ilgili mikroservislere yönlendirir.
+- Güvenlik, logging ve routing işlemlerini yönetir.
 
-Favorite List Service: Kullanıcıların beğendikleri ürünleri saklamasına olanak tanır.
+---
 
-Order Service: Sipariş oluşturma, geçmiş siparişleri listeleme ve durum takibi yapar.
+## 📦 Business Servisleri
 
-Payment Service: Ödeme süreçlerini ve ödeme sağlayıcı entegrasyonlarını yönetir.
+### 👤 User Service
+- Kullanıcı kayıt ve giriş işlemleri
+- Profil yönetimi
 
-🚀 Yerel Kurulum ve Çalıştırma
-Projeyi yerel makinenizde çalıştırmak için şu adımları izleyin:
+### 📦 Product Service
+- Ürün yönetimi
+- Kategori ve özellik tanımları
 
-1. Ön Hazırlık
-Java 17 veya üzeri bir sürümün yüklü olduğundan emin olun.
+### 📊 Stock Service
+- Ürün stok takibi
+- Stok güncelleme işlemleri
 
-Kullandığınız veritabanlarının (PostgreSQL) ve varsa Message Broker (RabbitMQ/Kafka) servislerinin ve KeyCloak ayakta olduğundan emin olun.
+### 🔎 Search Service
+- Ürünler arasında hızlı arama
+- Filtreleme ve sorgulama
 
-2. Servisleri Başlatma Sırası
-Mikroservislerin doğru çalışabilmesi için aşağıdaki sırayla başlatılması kritiktir:
+### 🛒 Shopping Cart Service
+- Sepete ürün ekleme / çıkarma
+- Sepet güncelleme işlemleri
 
-Config Server: Diğer servisler ayarlarını buradan çekeceği için ilk bu servis çalışmalıdır.
+### ❤️ Favorite List Service
+- Kullanıcıların favori ürünlerini saklama
 
-Discovery Server: Servislerin birbirini tanıyabilmesi için ikinci sırada çalışmalıdır.
+### 📑 Order Service
+- Sipariş oluşturma
+- Sipariş geçmişi
+- Sipariş durumu takibi
 
-Diğer Servisler: Artık product, order, user gibi servisleri dilediğiniz sırayla başlatabilirsiniz.
+### 💳 Payment Service
+- Ödeme işlemleri
+- Ödeme sağlayıcı entegrasyonları (örn: Iyzico)
 
-API Gateway: En son gateway servisini başlatarak dış dünyaya kapıları açabilirsiniz.
+---
+
+## 🚀 Kurulum ve Çalıştırma
+
+### 🔧 Ön Gereksinimler
+
+Aşağıdaki araçların sisteminizde kurulu ve çalışır durumda olması gerekir:
+
+- Java 17+
+- PostgreSQL
+- RabbitMQ veya Kafka (opsiyonel)
+- Keycloak (authentication için)
+
+---
+
+## ▶️ Servisleri Başlatma Sırası
+
+Mikroservislerin düzgün çalışması için aşağıdaki sıraya dikkat edilmelidir:
+
+1. **Config Server**
+   - Tüm servisler konfigürasyonlarını buradan alır.
+
+2. **Discovery Server (Eureka)**
+   - Servislerin birbirini bulabilmesi için gereklidir.
+
+3. **Diğer Servisler**
+   - `user-service`
+   - `product-service`
+   - `order-service`
+   - `stock-service`
+   - `search-service`
+   - `favorite-list-service`
+   - `shopping-cart-service`
+   - `payment-service`
+
+4. **API Gateway**
+   - En son başlatılır.
+   - Sistemin dış dünyaya açılan kapısıdır.
+
+---
+
+## 🧩 Kullanılan Teknolojiler
+
+- Java 21
+- Spring Boot
+- Spring Cloud
+- Netflix Eureka
+- Spring Cloud Gateway
+- PostgreSQL
+- RabbitMQ / Kafka
+- Keycloak
+- Docker
+
+---
+
+## 📌 Notlar
+
+- Mikroservisler birbirleriyle REST veya mesajlaşma (event-driven) üzerinden haberleşebilir.
+- Her servis bağımsız olarak deploy edilebilir yapıdadır.
+- Sistem ölçeklenebilir ve yüksek erişilebilirlik göz önünde bulundurularak tasarlanmıştır.
+
+---
+
+## 📄 Lisans
+
+Bu proje eğitim ve geliştirme amaçlı hazırlanmıştır.
