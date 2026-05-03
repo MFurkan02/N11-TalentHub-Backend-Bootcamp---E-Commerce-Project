@@ -28,7 +28,7 @@ const Navbar = () => {
     <nav className="navbar">
       {/* 1. LOGO */}
       <div className="navbar-logo">
-        <Link to="/">n11<span>Bootcamp</span></Link>
+        <Link to="/">n11<span>Lite</span></Link>
       </div>
 
       {/* 2. ARAMA ÇUBUĞU (YENİ) */}

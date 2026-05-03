@@ -295,11 +295,29 @@ const Products = () => {
                 {/* HEADER */}
                 <header className="modern-header">
                     <div className="title-section">
-                        <h1>🛍️ Ürünler</h1>
-                        <p>{products.length} ürün listeleniyor</p>
+                        {/* Eğer arama sorgusu varsa farklı başlık, yoksa normal başlık göster */}
+                        {searchQuery ? (
+                            <>
+                                <h1>🔍 Arama Sonuçları</h1>
+                                <p>
+                                    <strong>"{searchQuery}"</strong> için {products.length} ürün listeleniyor
+                                    {/* İsteğe bağlı: Aramayı temizle butonu */}
+                                    <button
+                                        onClick={() => window.location.href = '/products'}
+                                        className="clear-search-btn"
+                                        style={{ marginLeft: '10px', fontSize: '0.8rem', cursor: 'pointer' }}
+                                    >
+                                        ✖ Aramayı Temizle
+                                    </button>
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <h1>🛍️ Ürünler</h1>
+                                <p>{products.length} ürün listeleniyor</p>
+                            </>
+                        )}
                     </div>
-
-
                 </header>
 
                 {/* LOADING */}

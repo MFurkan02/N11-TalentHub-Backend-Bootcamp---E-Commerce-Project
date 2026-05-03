@@ -12,8 +12,8 @@
         <module name="discovery-server" />
         <module name="payment-service" />
         <module name="favorite-list-service" />
+        <module name="search-service" />
         <module name="api-gateway" />
-        <module name="product-service (1)" />
         <module name="product-service" />
         <module name="user-service" />
         <module name="order-service" />
@@ -30,7 +30,7 @@
       <module name="order-service" options="-parameters" />
       <module name="payment-service" options="-parameters" />
       <module name="product-service" options="-parameters" />
-      <module name="product-service (1)" options="-parameters" />
+      <module name="search-service" options="-parameters" />
       <module name="shopping-cart-service" options="-parameters" />
       <module name="stock-service" options="-parameters" />
       <module name="user-service" options="-parameters" />

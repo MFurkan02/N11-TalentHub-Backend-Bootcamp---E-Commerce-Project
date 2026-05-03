@@ -80,3 +80,19 @@
 .remove-item-link:hover {
     color: #666;
 }
+
+.fav-title h1 {
+    color: #1a1a1a !important; /* Net siyah */
+    opacity: 1 !important;      /* Saydamlığı tamamen kapatır */
+    font-size: 2rem;           /* Belirgin boyut */
+    font-weight: 700;          /* Kalın font */
+    margin: 0;                 /* Gereksiz boşlukları temizler */
+}
+
+/* Başlığın yanındaki ikon veya ek metinler için (varsa) */
+.fav-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #1a1a1a;
+}

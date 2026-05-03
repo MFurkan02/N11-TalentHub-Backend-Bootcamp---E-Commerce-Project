@@ -31,6 +31,10 @@ class ShoppingCartService {
     getTotalPrice(cartId) {
         return api.get(`${API_BASE_URL}/totalprice/${cartId}`);
     }
+
+    clearCartByShoppingCartName(username) {
+            return api.delete(`${API_BASE_URL}/clear/${username}`);
+    }
 }
 
 export default new ShoppingCartService();

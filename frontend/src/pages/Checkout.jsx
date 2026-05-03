@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import OrderService from '../services/OrderService';
+import ShoppingCartService from '../services/ShoppingCartService';
 import { toast } from 'react-toastify';
 import { CreditCard, MapPin, Truck, ShieldCheck, ChevronRight } from 'lucide-react';
 import '../Checkout.css';
@@ -31,14 +32,11 @@ const Checkout = () => {
     };
 
     const handleSubmit = async (e) => {
-
-        console.log("Gönderilen Form Verisi:", formData);
-
         e.preventDefault();
 
-        // Profesyonel Kontrol: Kart numarası 16 hane mi? CVC 3 hane mi?
+        // Basit Kart Kontrolü
         if (cardData.cardNumber.length !== 16) {
-            return toast.error("Geçerli bir kart numarası giriniz.");
+            return toast.error("Geçerli bir kart numarası giriniz (16 hane).");
         }
 
         const finalRequest = {
@@ -52,7 +50,7 @@ const Checkout = () => {
             city: formData.city,
             country: formData.country,
 
-            // 2. Ödeme Bilgileri (DTO'daki 'Card' nesnesiyle aynı isimler)
+            // 2. Ödeme Bilgileri
             paymentMethod: "IYZICO",
             card: {
                 cardHolderName: cardData.cardHolderName,
@@ -62,29 +60,45 @@ const Checkout = () => {
                 cvc: cardData.cvc
             },
 
-            // 3. Ürün Bilgileri (DTO'daki 'OrderItemDto' yapısı)
+            // 3. Ürün Bilgileri (Backend Beklentisine Uygun)
             items: state.cartItems.map(item => ({
                 productId: item.productId,
                 productName: item.name,
                 price: item.price,
-                quantity: item.amount // Backend 'quantity' beklediği için 'amount'u çevirdik
+                quantity: item.amount
             }))
         };
 
         try {
             toast.info("Ödemeniz işleniyor, lütfen bekleyin...", { autoClose: 2000 });
 
-            // OrderService üzerinden Checkout endpointine istek atıyoruz
+            // ADIM 1: Siparişi Oluştur
             const response = await OrderService.createOrder(finalRequest);
 
             if (response.data) {
-                toast.success("Ödeme Başarılı! Siparişiniz oluşturuldu.");
-                navigate("/orders"); // Başarılıysa siparişlerim sayfasına
+                // ADIM 2: Sipariş Başarılıysa Sepeti Temizle
+                try {
+                    // Backend'de yazdığın yeni 'clear' endpoint'ini çağırıyoruz
+                    await ShoppingCartService.clearCartByShoppingCartName(user.username);
+                    console.log("Sepet başarıyla temizlendi.");
+                } catch (cartErr) {
+                    // Sepet temizlenemese bile sipariş oluştuğu için akışı bozmayalım
+                    console.error("Sipariş oluştu ancak sepet temizlenirken hata alındı:", cartErr);
+                }
+
+                // ADIM 3: Kullanıcıyı Bilgilendir ve Yönlendir
+                toast.success("✨ Ödeme Başarılı! Siparişiniz oluşturuldu ve sepetiniz boşaltıldı.");
+
+                // Kısa bir gecikmeyle yönlendirme (Toast görünmesi için)
+                setTimeout(() => {
+                    navigate("/orders");
+                }, 1500);
             }
         } catch (err) {
-            // Iyzico'dan dönen hata mesajını (limit yetersiz, yanlış kart vs.) kullanıcıya gösteririz
+            // Backend'den veya Iyzico'dan gelen spesifik hata mesajını göster
             const errorMsg = err.response?.data?.message || "Ödeme reddedildi. Lütfen kart bilgilerinizi kontrol edin.";
             toast.error(errorMsg);
+            console.error("Checkout Hatası:", err);
         }
     };
 
