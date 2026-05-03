@@ -14,6 +14,7 @@ import com.n11bootcamp.user_service.request.SignupRequest;
 import com.n11bootcamp.user_service.request.UpdateUserRequest;
 import com.n11bootcamp.user_service.response.JwtResponse;
 import com.n11bootcamp.user_service.response.MessageResponse;
+import jakarta.validation.Valid;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -172,7 +173,7 @@ public class UserService {
     /**
      * ?? Yeni kullan�c� kayd�
      */
-    public ResponseEntity<?> registerUser(SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Username is already taken!"));
         }

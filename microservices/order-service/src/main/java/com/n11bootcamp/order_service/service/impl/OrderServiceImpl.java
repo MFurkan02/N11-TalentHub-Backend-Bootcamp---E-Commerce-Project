@@ -31,8 +31,6 @@ public class OrderServiceImpl implements OrderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     private final OrderRepository orderRepository;
-    private final PaymentServiceClient paymentServiceClient; // şu an createOrder içinde kullanılmıyor ama dursun
-    private final StockServiceClient stockServiceClient;     // aynı şekilde
     private final ApplicationEventPublisher publisher;
     private final RabbitTemplate rabbitTemplate;
     private final PaymentCardStore paymentCardStore;
@@ -52,8 +50,6 @@ public class OrderServiceImpl implements OrderService {
                             RabbitTemplate rabbitTemplate,
                             PaymentCardStore paymentCardStore) {
         this.orderRepository = orderRepository;
-        this.paymentServiceClient = paymentServiceClient;
-        this.stockServiceClient = stockServiceClient;
         this.publisher = publisher;
         this.rabbitTemplate = rabbitTemplate;
         this.paymentCardStore = paymentCardStore;
@@ -63,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest request) {
 
-        // 1️⃣ Order entity oluştur → CREATED
+        // Order entity
         Order order = new Order();
         order.setUsername(request.getUsername());
         order.setStatus(OrderStatus.CREATED);
@@ -73,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
                         .sum()
         );
 
-        // 1.1️⃣ OrderItem mapping
+        // mapping
         List<OrderItem> items = request.getItems().stream().map(dto -> {
             OrderItem item = new OrderItem();
             item.setProductId(dto.getProductId());
@@ -85,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
         }).collect(Collectors.toList());
         order.setItems(items);
 
-        // 1.2️⃣ OrderDetails mapping (Checkout bilgileri)
+        // OrderDetails mapping (Checkout bilgileri)
         OrderDetails details = new OrderDetails();
         details.setFirstName(request.getFirstName());
         details.setLastName(request.getLastName());
@@ -96,12 +92,12 @@ public class OrderServiceImpl implements OrderService {
         details.setEmail(request.getEmail());
         order.setOrderDetails(details);
 
-        // 1.3️⃣ Order DB'ye CREATED olarak kaydet
+        // Order CREATED -> DB
         Order savedOrder = orderRepository.save(order);
         LOGGER.info("Order CREATED kaydedildi. orderId={}, username={}, totalPrice={}",
                 savedOrder.getId(), savedOrder.getUsername(), savedOrder.getTotalPrice());
 
-        // 1.4️⃣ Kart bilgisini RAM üzerinde saga için sakla (DB'ye yazmıyoruz!)
+        // Kart bilgisini RAM üzerinde saga için sakla
         if (request.getCard() != null) {
             PaymentRequest.Card cardForStore = new PaymentRequest.Card();
             cardForStore.setCardHolderName(request.getCard().getCardHolderName());
@@ -117,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
                     savedOrder.getId());
         }
 
-        // 2️⃣ Saga başlangıcı: StockReserveRequestedEvent yayınla
+        // Saga başlangıcı: StockReserveRequestedEvent
         StockReserveRequestedEvent eventPayload = new StockReserveRequestedEvent();
         eventPayload.setOrderId(savedOrder.getId());
         eventPayload.setUsername(savedOrder.getUsername());
@@ -141,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
                 eventPayload
         );
 
-        // 2.1️⃣ (İsteğe bağlı) Spring içi event publish (senin eski yapın)
+        // Spring içi event publish
         OrderCreatedEvent springEvent = new OrderCreatedEvent();
         springEvent.setOrderId(savedOrder.getId());
         springEvent.setUsername(savedOrder.getUsername());
@@ -156,7 +152,7 @@ public class OrderServiceImpl implements OrderService {
         }).collect(Collectors.toList()));
         publisher.publishEvent(springEvent);
 
-        // 3️⃣ Şu anda CREATED durumunu döneriz.
+        // CREATED durumu
         OrderResponse response = new OrderResponse();
         response.setOrderId(savedOrder.getId());
         response.setUsername(savedOrder.getUsername());
