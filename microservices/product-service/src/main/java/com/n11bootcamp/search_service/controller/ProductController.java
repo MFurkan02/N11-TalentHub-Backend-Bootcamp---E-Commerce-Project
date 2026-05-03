@@ -1,9 +1,9 @@
-package com.n11bootcamp.product_service.controller;
+package com.n11bootcamp.search_service.controller;
 
 
 
-import com.n11bootcamp.product_service.entity.Product;
-import com.n11bootcamp.product_service.service.ProductService;
+import com.n11bootcamp.search_service.entity.Product;
+import com.n11bootcamp.search_service.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -11,10 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("api/product")

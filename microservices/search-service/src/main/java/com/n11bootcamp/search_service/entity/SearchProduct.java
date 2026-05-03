@@ -1,22 +1,12 @@
-package com.n11bootcamp.product_service.entity;
+package com.n11bootcamp.search_service.entity;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(
-        name = "product",
-        indexes = {
-                @Index(name = "idx_products_brand", columnList = "brand"),
-                @Index(name = "idx_products_color", columnList = "color"),
-                @Index(name = "idx_products_labels", columnList = "labels"),
-                @Index(name = "idx_products_category_key", columnList = "category_key")
-        }
-)
-public class Product {
+@Table(name = "product")
+public class SearchProduct {
 
-    public Product() {}
+    public SearchProduct() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

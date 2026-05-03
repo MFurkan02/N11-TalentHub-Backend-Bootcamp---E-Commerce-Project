@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ProductService from '../services/ProductService';
 import ShoppingCartService from '../services/ShoppingCartService';
+import SearchService from "../services/SearchService";
 import '../Products.css';
 import { toast } from "react-toastify";
+import { useLocation } from 'react-router-dom';
 import FavoriteListService from '../services/FavoriteListService';
 
 const Products = () => {
 
+    const location = useLocation();
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState(null);
     const [pageInfo, setPageInfo] = useState({ page: 0, totalPages: 0 });
@@ -21,16 +24,28 @@ const Products = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const DEFAULT_LIST_NAME = "Favorilerim";
 
+    // URL'deki ?q= parametresini yakala
+    const queryParams = new URLSearchParams(location.search);
+    const searchQuery = queryParams.get("q");
 
     useEffect(() => {
-        loadProducts(0);
+
+        // Eğer URL'de 'q' parametresi varsa SearchService'i kullan
+        if (searchQuery) {
+            fetchSearchResults(searchQuery, 0);
+        } else {
+            // Yoksa normal ürün listesini getir
+            loadProducts(0);
+        }
 
         if (user) {
             fetchCart();
             fetchUserFavoriteList();
             fetchAllUserLists();
         }
-    }, [lang]);
+        // location.search eklendi: URL her değiştiğinde useEffect çalışır
+    }, [lang, searchQuery, location.search]);
+
 
     const fetchCart = async () => {
         try {
@@ -38,6 +53,44 @@ const Products = () => {
             setCart(res.data);
         } catch (err) {
             console.log(err);
+        }
+    };
+
+    // 🔍 ARAMA SONUÇLARINI GETİR (Search Service - Spring Page yapısı döner)
+    const fetchSearchResults = async (query, page = 0) => {
+        setLoading(true);
+        try {
+            const res = await SearchService.search(query, page, 6);
+
+            setProducts(res.data.content || []);
+            setPageInfo({
+                page: res.data.number, // number kullanmalısın
+                totalPages: res.data.totalPages
+            });
+        } catch (err) {
+            toast.error("Arama yapılırken bir hata oluştu");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 📦 NORMAL ÜRÜNLERİ GETİR (Product Service - Senin Map.of yapın döner)
+    const loadProducts = async (page) => {
+        setLoading(true);
+        try {
+            const res = await ProductService.getPagedProducts(page, 6, lang);
+
+            // Product Service (Map.of) JSON yapısı:
+            // { "items": [], "page": 0, "totalPages": 5 ... }
+            setProducts(res.data.items || []);
+            setPageInfo({
+                page: res.data.page, // page kullanmalısın
+                totalPages: res.data.totalPages
+            });
+        } catch (err) {
+            toast.error("Ürünler yüklenemedi");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -86,21 +139,7 @@ const Products = () => {
         }
     };
 
-    const loadProducts = async (page) => {
-        setLoading(true);
-        try {
-            const res = await ProductService.getPagedProducts(page, 8, lang);
-            setProducts(res.data.items);
-            setPageInfo({
-                page: res.data.page,
-                totalPages: res.data.totalPages
-            });
-        } catch (err) {
-            toast.error("Ürünler yüklenemedi");
-        } finally {
-            setLoading(false);
-        }
-    };
+
 
     // 🔥 CART AMOUNT BUL
     const getAmount = (productId) => {
@@ -237,6 +276,18 @@ const Products = () => {
             }
         };
 
+    const changePage = (newPage) => {
+        // Sayfayı anında en üste taşır
+        window.scrollTo(0, 0);
+
+        // Hangi kaynaktan veri çekileceğine karar verir
+        if (searchQuery) {
+            fetchSearchResults(searchQuery, newPage);
+        } else {
+            loadProducts(newPage);
+        }
+    };
+
     return (
         <div className="product-page-container">
             <div className="product-page-content">
@@ -248,16 +299,7 @@ const Products = () => {
                         <p>{products.length} ürün listeleniyor</p>
                     </div>
 
-                    <div className="filter-section">
-                        <select
-                            className="modern-select"
-                            value={lang}
-                            onChange={(e) => setLang(e.target.value)}
-                        >
-                            <option value="tr">TR 🇹🇷</option>
-                            <option value="en">EN 🇺🇸</option>
-                        </select>
-                    </div>
+
                 </header>
 
                 {/* LOADING */}
@@ -412,21 +454,22 @@ const Products = () => {
                         </div>
 
                         {/* PAGINATION */}
+                        {/* PAGINATION */}
                         <div className="modern-pagination">
                             <button
                                 disabled={pageInfo.page === 0}
-                                onClick={() => loadProducts(pageInfo.page - 1)}
+                                onClick={() => changePage(pageInfo.page - 1)}
                             >
                                 ←
                             </button>
 
                             <span>
-                                {pageInfo.page + 1} / {pageInfo.totalPages}
+                               {pageInfo.page + 1} / {Math.max(pageInfo.totalPages, 1)}
                             </span>
 
                             <button
-                                disabled={pageInfo.page === pageInfo.totalPages - 1}
-                                onClick={() => loadProducts(pageInfo.page + 1)}
+                                disabled={pageInfo.page >= pageInfo.totalPages - 1 || pageInfo.totalPages === 0}
+                                onClick={() => changePage(pageInfo.page + 1)}
                             >
                                 →
                             </button>

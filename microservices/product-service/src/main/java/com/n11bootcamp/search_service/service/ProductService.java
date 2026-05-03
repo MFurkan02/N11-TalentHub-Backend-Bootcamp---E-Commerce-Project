@@ -1,7 +1,7 @@
-package com.n11bootcamp.product_service.service;
+package com.n11bootcamp.search_service.service;
 
-import com.n11bootcamp.product_service.entity.Product;
-import com.n11bootcamp.product_service.repository.ProductRepository;
+import com.n11bootcamp.search_service.entity.Product;
+import com.n11bootcamp.search_service.repository.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

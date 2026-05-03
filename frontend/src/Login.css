@@ -1,0 +1,112 @@
+/* Login Sayfası Konteynırı */
+.login-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px); /* Navbar payı */
+  background-color: #f6f7f9;
+  padding: 20px;
+}
+
+/* Giriş Kartı */
+.login-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+}
+
+.login-card h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+/* Form Elemanları */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #4b5563;
+  margin-bottom: 8px;
+  margin-left: 4px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  background-color: #f9fafb !important; /* Arka plan açık gri */
+  color: #111827 !important;           /* YAZI RENGİ: Koyu Antrasit/Siyah */
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* Yazarken veya tıklandığında da rengin sabit kalmasını garanti edelim */
+.form-group input:focus {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  border-color: #5d3ebc;
+  box-shadow: 0 0 0 4px rgba(93, 62, 188, 0.1);
+}
+
+/* Placeholder (İpucu metni) rengini de biraz belirginleştirelim */
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+/* Giriş Butonu */
+.login-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #5d3ebc;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.login-submit-btn:hover:not(:disabled) {
+  background-color: #4c32a3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(93, 62, 188, 0.2);
+}
+
+.login-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Alt Link */
+.login-redirect {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.login-redirect a {
+  color: #5d3ebc;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.login-redirect a:hover {
+  text-decoration: underline;
+}

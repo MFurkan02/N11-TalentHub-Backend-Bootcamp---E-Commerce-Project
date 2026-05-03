@@ -1,4 +1,4 @@
-package com.n11bootcamp.product_service;
+package com.n11bootcamp.search_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

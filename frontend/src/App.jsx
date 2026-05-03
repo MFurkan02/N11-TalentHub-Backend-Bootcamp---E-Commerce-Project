@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import Order from "./pages/Order"
 import Checkout from "./pages/Checkout"
 import FavoriteList from "./pages/FavoriteList"
+import Search from "./pages/SearchResult"
 
 import './App.css';
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/orders" element={<Order />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/favorites" element={<FavoriteList />} />
+            <Route path="/search" element={<Search />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>

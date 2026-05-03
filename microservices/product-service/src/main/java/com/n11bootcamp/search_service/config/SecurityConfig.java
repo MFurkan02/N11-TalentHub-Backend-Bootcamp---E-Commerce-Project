@@ -1,4 +1,4 @@
-package com.n11bootcamp.product_service.config;
+package com.n11bootcamp.search_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
